@@ -1,0 +1,49 @@
+---
+import FeatureCard from './FeatureCard.astro';
+
+const features = [
+  {
+    label: 'Create',
+    title: 'Trends, turned into ideas.',
+    description: 'We automatically find the trends that work and turn them into content ideas.',
+    accent: 'lime' as const,
+  },
+  {
+    label: 'Plan',
+    title: 'Posted at the right time.',
+    description:
+      'Schedule and publish automatically at the best time, and plan around your brand-deal videos.',
+    accent: 'pink' as const,
+  },
+  {
+    label: 'Grow',
+    title: 'Brand deals, handled.',
+    description:
+      'AI agents manage inbound and outbound brand deals, from logistics to negotiation.',
+    accent: 'butter' as const,
+  },
+];
+---
+
+<section class="mx-auto w-full max-w-6xl px-6 pb-24 md:px-10 md:pb-32">
+  <div class="mx-auto max-w-3xl text-center">
+    <p class="text-sm tracking-[-0.01em] text-muted">( Why PassiveInfluencers )</p>
+    <h2 class="mt-5 text-[clamp(2rem,5vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.04em] text-paper">
+      Every tool a creator business needs, finally working as
+      <span class="text-lime"> one.</span>
+    </h2>
+  </div>
+
+  <div class="mt-12 grid gap-5 md:mt-16 md:grid-cols-3">
+    {
+      features.map((feature) => (
+        <FeatureCard
+          label={feature.label}
+          title={feature.title}
+          description={feature.description}
+          accent={feature.accent}
+        />
+      ))
+    }
+  </div>
+</section>

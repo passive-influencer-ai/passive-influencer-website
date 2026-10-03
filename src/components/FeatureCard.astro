@@ -1,0 +1,44 @@
+---
+interface Props {
+  label: string;
+  title: string;
+  description: string;
+  accent: 'lime' | 'pink' | 'butter';
+}
+
+const { label, title, description, accent } = Astro.props;
+
+const accentText = {
+  lime: 'text-lime',
+  pink: 'text-pink',
+  butter: 'text-butter',
+}[accent];
+---
+
+<article class="flex h-full flex-col rounded-[1.75rem] bg-ink-elevated px-7 py-8 md:px-8 md:py-10">
+  <div class="mb-10" aria-hidden="true">
+    {
+      accent === 'lime' && (
+        <span class="block h-14 w-14 rounded-full bg-lime"></span>
+      )
+    }
+    {
+      accent === 'pink' && (
+        <span class="mt-3 block h-9 w-20 -rotate-12 rounded-full bg-pink"></span>
+      )
+    }
+    {
+      accent === 'butter' && (
+        <span class="mt-2 block h-12 w-20 overflow-hidden rounded-t-full">
+          <span class="block h-full w-full rounded-t-full bg-butter"></span>
+        </span>
+      )
+    }
+  </div>
+
+  <p class={`text-sm font-semibold tracking-[-0.01em] ${accentText}`}>{label}</p>
+  <h3 class="mt-3 text-[1.65rem] font-bold leading-tight tracking-[-0.03em] text-paper md:text-[1.85rem]">
+    {title}
+  </h3>
+  <p class="mt-4 text-base leading-relaxed text-paper/75">{description}</p>
+</article>
