@@ -8,6 +8,7 @@ Public placeholder website for PassiveInfluencers, implemented in Astro and styl
 - Tailwind CSS v4
 - Manrope (variable)
 - GitHub Pages via GitHub Actions
+- Custom domain: `https://passiveinfluencer.ai`
 
 ## Local development
 
@@ -29,19 +30,22 @@ npm run preview
 
 Pushing to `main` runs `.github/workflows/deploy.yml`, which builds with `withastro/action` and deploys to GitHub Pages.
 
-Expected URL once Pages is enabled on the repository:
+Canonical URL:
 
-`https://passive-influencer-ai.github.io/passive-influencer-website/`
+`https://passiveinfluencer.ai/`
+
+`astro.config.mjs` sets:
+
+- `site`: `https://passiveinfluencer.ai`
+- `base`: `/`
+
+`public/CNAME` contains `passiveinfluencer.ai` so Pages serves the site at the domain root (not under `/passive-influencer-website/`).
 
 One-time repository setup:
 
 1. Settings → Pages → Build and deployment → Source: **GitHub Actions**
-2. Confirm the first workflow run succeeds
-
-`astro.config.mjs` sets:
-
-- `site`: `https://passive-influencer-ai.github.io`
-- `base`: `/passive-influencer-website/`
+2. Settings → Pages → Custom domain: `passiveinfluencer.ai`
+3. Enable **Enforce HTTPS** so `github.io` and `http://` hop straight to `https://passiveinfluencer.ai` with no intermediate timer page
 
 ## Context
 

@@ -1,6 +1,5 @@
 ---
 const linkedInUrl = 'https://www.linkedin.com/';
-const base = import.meta.env.BASE_URL;
 ---
 
 <footer class="mx-auto w-full max-w-6xl px-6 pb-16 pt-4 md:px-10 md:pb-20">
@@ -32,7 +31,7 @@ const base = import.meta.env.BASE_URL;
       aria-label="Open LinkedIn via QR code"
     >
       <img
-        src={`${base}qr-linkedin.png`}
+        src="/qr-linkedin.png"
         alt="QR code linking to LinkedIn"
         width="148"
         height="148"

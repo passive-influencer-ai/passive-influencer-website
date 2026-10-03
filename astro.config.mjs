@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://passive-influencer-ai.github.io',
-  base: '/passive-influencer-website/',
+  site: 'https://passiveinfluencer.ai',
+  base: '/',
   vite: {
     plugins: [tailwindcss()],
   },
