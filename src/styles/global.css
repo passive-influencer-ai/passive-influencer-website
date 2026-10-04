@@ -10,7 +10,35 @@
   --color-lime: #c6f24a;
   --color-pink: #f3a9c7;
   --color-butter: #f2d98a;
+  --color-coal: #121212;
+  --color-lime-text: #c6f24a;
+  --color-pink-text: #f3a9c7;
+  --color-butter-text: #f2d98a;
   --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Light mode, toggled by the pink "on" switch in the hero. Accent text gets
+   darker shades so it stays readable on a light background. */
+:root[data-theme="light"] {
+  --color-ink: #f6f4ee;
+  --color-ink-elevated: #ffffff;
+  --color-ink-soft: #ecebe5;
+  --color-paper: #141414;
+  --color-muted: #6a6a6a;
+  --color-lime-text: #4d6b00;
+  --color-pink-text: #b23a6c;
+  --color-butter-text: #8a6500;
+  color-scheme: light;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 html {
@@ -29,7 +57,7 @@ body {
 
 ::selection {
   background: color-mix(in srgb, var(--color-lime) 45%, transparent);
-  color: var(--color-ink);
+  color: var(--color-coal);
 }
 
 @keyframes rise-in {
@@ -63,6 +91,27 @@ body {
   }
 }
 
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+.shimmer {
+  display: block;
+  background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--color-paper) 6%, transparent) 30%,
+      color-mix(in srgb, var(--color-paper) 16%, transparent) 50%,
+      color-mix(in srgb, var(--color-paper) 6%, transparent) 70%
+    )
+    0 0 / 200% 100%;
+  animation: shimmer 2.4s ease-in-out infinite;
+}
+
 .animate-rise {
   animation: rise-in 0.8s ease-out both;
 }
@@ -92,7 +141,8 @@ body {
   .animate-rise-delay-1,
   .animate-rise-delay-2,
   .animate-float,
-  .animate-pulse-glow {
+  .animate-pulse-glow,
+  .shimmer {
     animation: none !important;
   }
 }

@@ -1,41 +1,341 @@
 ---
+const linkedInUrl = 'https://www.linkedin.com/';
+const rollLetters = [...'Influence'];
 ---
 
-<section class="relative mx-auto grid w-full max-w-6xl gap-12 overflow-hidden px-6 pb-20 pt-4 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-center md:gap-8 md:px-10 md:pb-28">
-  <div class="relative z-10 max-w-xl">
-    <p class="animate-rise text-sm tracking-[-0.01em] text-muted">
-      ( For influencers &amp; the marketing teams behind them )
-    </p>
-
-    <h1 class="animate-rise-delay-1 mt-6 text-[clamp(2.8rem,8vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.045em] text-paper">
-      Influence,<br />
-      <span class="relative inline-block">
-        <span
-          class="pointer-events-none absolute left-[-4%] top-[18%] -z-10 h-[58%] w-[108%] -rotate-6 rounded-full bg-pink"
-          aria-hidden="true"
-        ></span>
-        on autopilot
-      </span><span class="text-lime">.</span>
+<section
+  data-hero
+  class="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-between gap-6 px-5 pb-8 pt-2 md:px-10 md:pb-12"
+>
+  <div class="flex flex-1 items-center">
+    <h1 class="hero-title w-full font-bold text-paper" aria-label="Influence, on autopilot.">
+      <span class="block" aria-hidden="true">
+        <span data-line data-roll-line class="line relative block"><span data-baseline class="baseline"></span>{rollLetters.map((letter) => <span data-roll-letter>{letter}</span>)},<span data-dome class="dome"></span></span>
+      </span>
+      <span class="block text-right">
+        <span data-line class="line inline-block"><button
+            type="button"
+            data-theme-switch
+            class="pill-word"
+            role="switch"
+            aria-checked="false"
+            aria-label="Light mode"
+            title="Switch to light mode"
+          ><span data-pill class="pill"></span><span class="relative">on</span></button><span aria-hidden="true"> aut<span data-dot-wrap class="dot-wrap"><span data-dot class="dot"></span></span>pilot<span data-stop class="stop"></span></span></span>
+      </span>
     </h1>
+  </div>
 
-    <p class="animate-rise-delay-2 mt-8 max-w-md text-base leading-relaxed text-paper/85 md:text-lg">
+  <div data-hero-copy class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between md:gap-10">
+    <p class="max-w-2xl text-[clamp(1.15rem,2.2vw,1.85rem)] leading-snug tracking-[-0.02em] text-paper/85">
       A technology platform we&apos;re building for
       {' '}
-      <span class="font-semibold text-lime">influencers who run their own business</span>
+      <span class="font-semibold text-lime-text">influencers who run their own business</span>
       {' '}
       - and the firms behind their marketing.
     </p>
-  </div>
 
-  <div class="relative mx-auto aspect-square w-full max-w-md md:max-w-none" aria-hidden="true">
-    <div class="animate-float absolute left-[8%] top-[6%] h-[62%] w-[62%] rounded-full bg-lime"></div>
-    <div
-      class="absolute right-[2%] top-[28%] h-[22%] w-[78%] -rotate-[28deg] rounded-full bg-pink"
-    ></div>
-    <div
-      class="absolute bottom-[4%] left-[18%] h-[34%] w-[68%] overflow-hidden rounded-t-full"
+    <a
+      href={linkedInUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="group inline-flex shrink-0 items-center gap-3 self-start rounded-full bg-lime px-6 py-3.5 text-base font-semibold tracking-[-0.01em] text-coal transition-transform duration-300 hover:-rotate-2 hover:scale-[1.03] md:self-auto"
     >
-      <div class="h-full w-full rounded-t-full bg-butter"></div>
-    </div>
+      <svg viewBox="0 0 24 24" class="h-5 w-5 fill-coal" aria-hidden="true">
+        <path
+          d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.34h4.52V24H.24V8.34zM8.34 8.34h4.33v2.13h.06c.6-1.14 2.08-2.34 4.28-2.34 4.58 0 5.42 3.01 5.42 6.93V24h-4.52v-7.75c0-1.85-.03-4.22-2.57-4.22-2.57 0-2.96 2.01-2.96 4.09V24H8.34V8.34z"
+        ></path>
+      </svg>
+      <span>Connect with us on LinkedIn</span>
+    </a>
   </div>
 </section>
+
+<style>
+  /* Glyph measurements for Manrope Bold, in em: the "o" bowl runs from 0.031em
+     to 0.579em across, and from 0.016em below the baseline to 0.563em above it.
+     The lime "o" is sized to match. */
+  .hero-title {
+    font-size: clamp(2.7rem, min(13.6vw, 21svh), 11rem);
+    line-height: 0.92;
+    letter-spacing: -0.055em;
+  }
+
+  /* Zero-size box on the baseline, used to measure where letters sit. */
+  .baseline {
+    display: inline-block;
+    width: 0;
+    height: 0;
+  }
+
+  /* Half circle that hops along the tops of the letters in "Influence". The
+     script places it; until then it rests on the "I". */
+  .dome {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Same size as the top of the "e" above its crossbar: 0.548em across and
+       0.236em tall. */
+    width: 0.548em;
+    height: 0.236em;
+    border-radius: 0.274em 0.274em 0 0 / 0.236em 0.236em 0 0;
+    background: var(--color-butter);
+    transform-origin: 50% 100%;
+    visibility: hidden;
+  }
+
+  .pill-word {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    margin-inline: 0.12em 0.04em;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    color: var(--color-coal);
+    cursor: pointer;
+  }
+
+  .pill-word:focus-visible {
+    outline: 3px solid var(--color-lime-text);
+    outline-offset: 0.08em;
+    border-radius: 999px;
+  }
+
+  .pill {
+    position: absolute;
+    z-index: -1;
+    inset: 22% -0.16em 2% -0.16em;
+    border-radius: 999px;
+    background: var(--color-pink);
+    transform: rotate(-6deg);
+  }
+
+  .dot-wrap {
+    display: inline-block;
+    margin-inline: 0.031em 0.039em;
+    vertical-align: -0.016em;
+  }
+
+  .dot {
+    display: block;
+    width: 0.548em;
+    height: 0.548em;
+    border-radius: 999px;
+    background: var(--color-lime);
+    transform-origin: 50% 100%;
+  }
+
+  .stop {
+    display: inline-block;
+    width: 0.17em;
+    height: 0.17em;
+    margin-left: 0.05em;
+    background: var(--color-lime);
+    cursor: grab;
+    touch-action: none;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { Draggable } from 'gsap/Draggable';
+
+  gsap.registerPlugin(ScrollTrigger, Draggable);
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Where the dome sits on top of each letter of "Influence", measured from
+  // the font so it lands on the real ink, not the letter's box.
+  const rollLine = hero?.querySelector<HTMLElement>('[data-roll-line]');
+  const dome = hero?.querySelector<HTMLElement>('[data-dome]');
+  const measureLetterTops = () => {
+    if (!rollLine || !dome) return [];
+    const lineBox = rollLine.getBoundingClientRect();
+    const baseline = rollLine.querySelector<HTMLElement>('[data-baseline]')!.getBoundingClientRect().top - lineBox.top;
+    const style = getComputedStyle(rollLine);
+    const context = document.createElement('canvas').getContext('2d')!;
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    return [...rollLine.querySelectorAll<HTMLElement>('[data-roll-letter]')].map((letter) => {
+      const box = letter.getBoundingClientRect();
+      const ink = context.measureText(letter.textContent ?? '');
+      const left = box.left - lineBox.left;
+      const centre = left + (ink.actualBoundingBoxRight - ink.actualBoundingBoxLeft) / 2;
+      return {
+        x: centre - dome.offsetWidth / 2,
+        y: baseline - ink.actualBoundingBoxAscent - dome.offsetHeight,
+      };
+    });
+  };
+
+  // The pink "on" pill is a light/dark switch.
+  const themeSwitch = hero?.querySelector<HTMLButtonElement>('[data-theme-switch]');
+  const pill = hero?.querySelector<HTMLElement>('[data-pill]');
+  const root = document.documentElement;
+  const syncSwitch = () => {
+    const light = root.dataset.theme === 'light';
+    themeSwitch?.setAttribute('aria-checked', String(light));
+    themeSwitch?.setAttribute('title', light ? 'Switch to dark mode' : 'Switch to light mode');
+  };
+  syncSwitch();
+
+  themeSwitch?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
+    const apply = () => {
+      if (next === 'light') root.dataset.theme = 'light';
+      else delete root.dataset.theme;
+      syncSwitch();
+      try {
+        localStorage.setItem('pi-theme', next);
+      } catch {}
+    };
+
+    if (reduceMotion || !('startViewTransition' in document)) {
+      apply();
+      return;
+    }
+
+    // Wipe the new theme out from the pill in a growing circle.
+    const box = themeSwitch.getBoundingClientRect();
+    const x = box.left + box.width / 2;
+    const y = box.top + box.height / 2;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    gsap.fromTo(pill, { scaleX: 0.8, scaleY: 1.2 }, { scaleX: 1, scaleY: 1, duration: 0.9, ease: 'elastic.out(1.1, 0.3)' });
+    document.startViewTransition(apply).ready.then(() => {
+      root.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', pseudoElement: '::view-transition-new(root)' },
+      );
+    });
+  });
+
+  // Without motion, the dome simply rests on the "I".
+  if (reduceMotion && dome) {
+    document.fonts.ready.then(() => {
+      const [first] = measureLetterTops();
+      if (first) gsap.set(dome, { x: first.x, y: first.y, visibility: 'visible' });
+    });
+  }
+
+  if (hero && !reduceMotion) {
+    const lines = hero.querySelectorAll<HTMLElement>('[data-line]');
+    const dotWrap = hero.querySelector<HTMLElement>('[data-dot-wrap]');
+    const dot = hero.querySelector<HTMLElement>('[data-dot]');
+    const stop = hero.querySelector<HTMLElement>('[data-stop]');
+    const copy = hero.querySelector<HTMLElement>('[data-hero-copy]');
+
+    // The dome drops onto the "I", then hops and rolls along the top of every
+    // other letter, holds on the last "e", falls away, and starts again. Quick moves,
+    // then a beat of stillness.
+    let roll: gsap.core.Timeline | undefined;
+    const startRoll = () => {
+      roll?.kill();
+      // Land on every other letter (1st, 3rd, 5th...), always finishing on the last.
+      const letterTops = measureLetterTops();
+      const tops = letterTops.filter((_, index) => index % 2 === 0 || index === letterTops.length - 1);
+      if (!dome || !tops.length) return;
+      const hop = dome.offsetHeight * 1.6;
+      const first = tops[0];
+      const last = tops[tops.length - 1];
+
+      roll = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
+      roll
+        .set(dome, { x: first.x, y: first.y - hop * 3, rotation: 0, scale: 1, opacity: 0, visibility: 'visible' })
+        .to(dome, { y: first.y, opacity: 1, duration: 0.6, ease: 'power2.in' })
+        .to(dome, { scaleX: 1.2, scaleY: 0.75, duration: 0.1, ease: 'power1.out', yoyo: true, repeat: 1 });
+
+      tops.slice(1).forEach((top, index) => {
+        const from = tops[index];
+        const peak = Math.min(from.y, top.y) - hop;
+        roll!
+          .to(dome, { x: top.x, rotation: '+=360', duration: 0.7, ease: 'power1.inOut' }, '>-0.02')
+          .to(dome, { y: peak, duration: 0.35, ease: 'power2.out' }, '<')
+          .to(dome, { y: top.y, duration: 0.35, ease: 'power2.in' }, '>')
+          .to(dome, { scaleX: 1.15, scaleY: 0.8, duration: 0.08, ease: 'power1.out', yoyo: true, repeat: 1 });
+      });
+
+      roll
+        .to(dome, { duration: 1 })
+        .to(dome, { x: last.x + dome.offsetWidth * 2, rotation: '+=180', duration: 0.7, ease: 'power1.in' })
+        .to(dome, { y: last.y - hop, duration: 0.28, ease: 'power2.out' }, '<')
+        .to(dome, { y: last.y + hop * 4, opacity: 0, duration: 0.42, ease: 'power2.in' }, '>');
+    };
+
+    let resizeTimer: number | undefined;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => roll && startRoll(), 200);
+    });
+
+    // The "o" bounces twice, settles, and rests for a second before going again.
+    const bounceDot = () =>
+      gsap
+        .timeline({ repeat: -1, repeatDelay: 1 })
+        .to(dot, { y: '-0.3em', scaleX: 0.92, scaleY: 1.08, duration: 0.3, ease: 'power2.out' })
+        .to(dot, { y: 0, scaleX: 1, scaleY: 1, duration: 0.26, ease: 'power2.in' })
+        .to(dot, { scaleX: 1.16, scaleY: 0.82, duration: 0.07, ease: 'power1.out', yoyo: true, repeat: 1 })
+        .to(dot, { y: '-0.09em', duration: 0.15, ease: 'power2.out' })
+        .to(dot, { y: 0, duration: 0.15, ease: 'power2.in' })
+        .to(dot, { scaleX: 1.06, scaleY: 0.94, duration: 0.05, ease: 'power1.out', yoyo: true, repeat: 1 });
+
+    // The pink "on" buzzes like a phone, then goes still for a second.
+    const buzzPill = () =>
+      gsap.timeline({ repeat: -1, repeatDelay: 1 }).to(themeSwitch!, {
+        keyframes: {
+          rotation: [0, -4, 4, -4, 4, -3, 3, -2, 2, 0],
+          x: [0, -3, 3, -3, 3, -2, 2, -1, 1, 0],
+        },
+        duration: 0.55,
+        ease: 'none',
+      });
+
+    // Entrance: lines rise, then each shape lands in its letter.
+    const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    intro
+      .from(lines, { yPercent: 70, rotate: 4, opacity: 0, duration: 1, stagger: 0.14 })
+      .add(() => {
+        document.fonts.ready.then(startRoll);
+      }, 1)
+      .from(pill, { scaleX: 0, transformOrigin: '0% 50%', duration: 0.8, ease: 'back.out(2)', onComplete: buzzPill }, 0.55)
+      .from(dot, { scale: 0, duration: 0.9, ease: 'elastic.out(1, 0.45)', onComplete: bounceDot }, 0.7)
+      .from(stop, { y: '-1.6em', rotate: -90, opacity: 0, duration: 0.9, ease: 'bounce.out' }, 0.85)
+      .from(copy, { y: 24, opacity: 0, duration: 0.8 }, 0.9);
+
+    // The full stop can be dragged out and springs back home.
+    if (stop) {
+      Draggable.create(stop, {
+        type: 'x,y',
+        onPress() {
+          stop.style.cursor = 'grabbing';
+        },
+        onRelease() {
+          stop.style.cursor = 'grab';
+          gsap.to(stop, { x: 0, y: 0, duration: 1.1, ease: 'elastic.out(1, 0.35)' });
+        },
+      });
+    }
+
+    // On fine pointers the "o" and pill lean toward the cursor.
+    if (window.matchMedia('(pointer: fine)').matches && dotWrap && pill) {
+      const dotX = gsap.quickTo(dotWrap, 'x', { duration: 0.6, ease: 'power3.out' });
+      const pillX = gsap.quickTo(pill, 'x', { duration: 0.8, ease: 'power3.out' });
+      window.addEventListener('pointermove', (event) => {
+        const rx = event.clientX / window.innerWidth - 0.5;
+        dotX(rx * 14);
+        pillX(rx * 10);
+      });
+    }
+
+    // Scrolling away tips the shapes over.
+    gsap
+      .timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 } })
+      .to(pill, { rotation: 10, ease: 'none' }, 0)
+      .to(dotWrap, { scale: 0.7, transformOrigin: '50% 100%', ease: 'none' }, 0)
+      .to(stop, { rotation: 180, ease: 'none' }, 0);
+  }
+</script>
