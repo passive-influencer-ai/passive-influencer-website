@@ -7,9 +7,11 @@ import Footer from '../components/Footer.astro';
 ---
 
 <Layout>
-  <main class="min-h-screen">
-    <Navbar />
-    <Hero />
+  <main class="overflow-x-clip">
+    <div class="flex h-[100svh] min-h-[32rem] flex-col">
+      <Navbar />
+      <Hero />
+    </div>
     <Features />
     <Footer />
   </main>

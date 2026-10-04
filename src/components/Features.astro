@@ -7,6 +7,7 @@ const features = [
     title: 'Trends, turned into ideas.',
     description: 'We automatically find the trends that work and turn them into content ideas.',
     accent: 'lime' as const,
+    hint: 'Trend found',
   },
   {
     label: 'Plan',
@@ -14,6 +15,7 @@ const features = [
     description:
       'Schedule and publish automatically at the best time, and plan around your brand-deal videos.',
     accent: 'pink' as const,
+    hint: 'Best time to post',
   },
   {
     label: 'Grow',
@@ -21,29 +23,61 @@ const features = [
     description:
       'AI agents manage inbound and outbound brand deals, from logistics to negotiation.',
     accent: 'butter' as const,
+    hint: 'Negotiation',
   },
 ];
 ---
 
-<section class="mx-auto w-full max-w-6xl px-6 pb-24 md:px-10 md:pb-32">
-  <div class="mx-auto max-w-3xl text-center">
-    <p class="text-sm tracking-[-0.01em] text-muted">( Why PassiveInfluencers )</p>
-    <h2 class="mt-5 text-[clamp(2rem,5vw,3.4rem)] font-bold leading-[1.05] tracking-[-0.04em] text-paper">
-      Every tool a creator business needs, finally working as
-      <span class="text-lime"> one.</span>
-    </h2>
-  </div>
+<section class="mx-auto w-full max-w-7xl px-5 pb-24 pt-20 md:px-10 md:pb-32 md:pt-32">
+  <h2
+    data-reveal
+    class="max-w-4xl text-[clamp(2.2rem,5.5vw,4.5rem)] font-bold leading-[1.02] tracking-[-0.045em] text-paper"
+  >
+    Every tool a creator business needs, finally working as
+    <span class="text-lime"> one.</span>
+  </h2>
 
-  <div class="mt-12 grid gap-5 md:mt-16 md:grid-cols-3">
+  <div class="mt-14 flex flex-col gap-6 md:mt-20 md:gap-8">
     {
-      features.map((feature) => (
+      features.map((feature, index) => (
         <FeatureCard
           label={feature.label}
           title={feature.title}
           description={feature.description}
           accent={feature.accent}
+          hint={feature.hint}
+          reverse={index % 2 === 1}
         />
       ))
     }
   </div>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((element) => {
+      gsap.from(element, {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: element, start: 'top 85%' },
+      });
+    });
+
+    gsap.utils.toArray<HTMLElement>('[data-feature-shape]').forEach((shape) => {
+      gsap.from(shape, {
+        scale: 0,
+        rotate: -45,
+        duration: 1,
+        ease: 'elastic.out(1, 0.5)',
+        scrollTrigger: { trigger: shape, start: 'top 85%' },
+      });
+    });
+  }
+</script>
