@@ -11,9 +11,9 @@ interface Props {
 const { label, title, description, accent, hint, reverse = false } = Astro.props;
 
 const accentText = {
-  lime: 'text-lime',
-  pink: 'text-pink',
-  butter: 'text-butter',
+  lime: 'text-lime-text',
+  pink: 'text-pink-text',
+  butter: 'text-butter-text',
 }[accent];
 
 const accentBg = {
@@ -53,9 +53,9 @@ const accentBg = {
     aria-label={`Placeholder screen: ${hint}`}
   >
     <div class="flex gap-1.5" aria-hidden="true">
-      <span class="h-2.5 w-2.5 rounded-full bg-white/15"></span>
-      <span class="h-2.5 w-2.5 rounded-full bg-white/15"></span>
-      <span class="h-2.5 w-2.5 rounded-full bg-white/15"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-paper/15"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-paper/15"></span>
+      <span class="h-2.5 w-2.5 rounded-full bg-paper/15"></span>
     </div>
 
     <div class="mt-6 flex flex-col gap-3" aria-hidden="true">
@@ -66,10 +66,10 @@ const accentBg = {
     </div>
 
     <span
-      class={`absolute bottom-5 right-5 inline-flex items-center gap-2 rounded-full ${accentBg} px-4 py-2 text-sm font-semibold text-ink md:bottom-7 md:right-7`}
+      class={`absolute bottom-5 right-5 inline-flex items-center gap-2 rounded-full ${accentBg} px-4 py-2 text-sm font-semibold text-coal md:bottom-7 md:right-7`}
       aria-hidden="true"
     >
-      <span class="h-2 w-2 rounded-full bg-ink"></span>
+      <span class="h-2 w-2 rounded-full bg-coal"></span>
       {hint}
     </span>
   </div>
