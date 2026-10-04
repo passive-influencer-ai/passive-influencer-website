@@ -1,0 +1,401 @@
+---
+import DeviceFrame from './DeviceFrame.astro';
+import Icon from './Icon.astro';
+
+// Reach for the post's topic through the week. Thursday is the best time.
+const week = [
+  { day: 'M', reach: 38 },
+  { day: 'T', reach: 52 },
+  { day: 'W', reach: 46 },
+  { day: 'T', reach: 100, best: true },
+  { day: 'F', reach: 64 },
+  { day: 'S', reach: 41 },
+  { day: 'S', reach: 30 },
+];
+
+const agenda = [
+  { kind: 'deal', title: 'Skincare brand', detail: 'Review video, 1 post', tag: 'Due Tue' },
+  { kind: 'post', title: 'Your post: Travel vlog', detail: 'Wed 6:00 pm' },
+  { kind: 'deal', title: 'Outdoor gear brand', detail: '2 posts', tag: 'Due Fri' },
+  { kind: 'post', title: 'Your post: Q&A', detail: 'Fri 7:00 pm', movedTo: 'Sat 11:00 am', tag: 'Moved' },
+] as const;
+---
+
+<div class="panel-canvas">
+  <DeviceFrame kind="phone">
+    <div class="tabs">
+      <button type="button" data-tab class="app-tab" aria-pressed="true">
+        Best time<span data-tab-progress class="app-tab-progress"></span>
+      </button>
+      <button type="button" data-tab class="app-tab" aria-pressed="false">
+        Brand deals<span data-tab-progress class="app-tab-progress"></span>
+      </button>
+    </div>
+
+    <div class="scenes" aria-hidden="true">
+      <div data-scene class="scene">
+        <div data-post class="app-card post">
+          <div class="chips">
+            <span class="app-chip topic">Skincare</span>
+            <span class="app-chip app-chip-soft">Short video</span>
+          </div>
+          <span class="app-text">Night routine, 3 steps</span>
+          <div class="status">
+            <span class="app-label">Status</span>
+            <span class="status-chips">
+              <span data-draft class="app-chip app-chip-soft">Draft</span>
+              <span data-scheduled class="app-chip scheduled"><Icon name="check" />Scheduled</span>
+            </span>
+          </div>
+        </div>
+
+        <div data-headline class="headline">
+          <span class="app-label">Best time to post</span>
+          <strong class="big">Thu 7:30 pm</strong>
+          <span class="sub">
+            <span class="app-chip topic">High reach</span>
+            <span class="app-text app-muted">92% confidence</span>
+          </span>
+        </div>
+
+        <div class="app-card chart">
+          <span class="app-label">Reach for this topic</span>
+          <div class="bars">
+            {
+              week.map((day) => (
+                <div class="bar-col">
+                  <span class="bar-track">
+                    {day.best && (
+                      <span data-marker class="marker">
+                        7:30 pm
+                      </span>
+                    )}
+                    <span
+                      data-bar
+                      data-best={day.best ? '' : undefined}
+                      class:list={['bar', day.best && 'bar-best']}
+                      style={`height: ${day.reach}%`}
+                    />
+                  </span>
+                  <span class="day">{day.day}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+
+      <div data-scene class="scene">
+        <div data-headline class="headline">
+          <span class="app-label">This week</span>
+          <strong class="big">2 brand deals</strong>
+          <span class="app-text app-muted">Your posts are planned around them</span>
+        </div>
+
+        <div class="app-card agenda">
+          {
+            agenda.map((item) => (
+              <div data-row data-deal={item.kind === 'deal' ? '' : undefined} class="row">
+                <span class:list={['row-icon', `row-icon-${item.kind}`]}>
+                  <Icon name={item.kind === 'deal' ? 'pin' : 'calendar'} />
+                </span>
+                <span class="row-text">
+                  <span class="row-title">{item.title}</span>
+                  <span class="row-detail">
+                    {'movedTo' in item ? (
+                      <>
+                        <span data-old-time>{item.detail}</span>
+                        <span data-new-time class="new-time">
+                          {item.movedTo}
+                        </span>
+                      </>
+                    ) : (
+                      item.detail
+                    )}
+                  </span>
+                </span>
+                {'tag' in item && (
+                  <span
+                    data-moved={'movedTo' in item ? '' : undefined}
+                    class:list={['app-chip', item.kind === 'deal' ? 'due' : 'topic']}
+                  >
+                    {item.tag}
+                  </span>
+                )}
+              </div>
+            ))
+          }
+        </div>
+
+        <span data-toast class="app-chip toast"><Icon name="check" />Deal dates remembered</span>
+      </div>
+    </div>
+  </DeviceFrame>
+</div>
+
+<style>
+  .tabs {
+    position: absolute;
+    left: 0.9em;
+    top: 0.3em;
+    display: flex;
+    gap: 0.4em;
+  }
+
+  .scenes {
+    position: absolute;
+    inset: 2.6em 0 0;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0 0.9em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+  }
+
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55em;
+    padding: 0.8em;
+  }
+
+  .chips {
+    display: flex;
+    gap: 0.35em;
+  }
+
+  .topic {
+    background: color-mix(in srgb, var(--color-pink) 20%, transparent);
+    color: var(--color-pink);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .status-chips {
+    display: grid;
+    justify-items: end;
+  }
+
+  .status-chips > * {
+    grid-area: 1 / 1;
+  }
+
+  .scheduled {
+    background: var(--color-pink);
+    color: var(--color-coal);
+  }
+
+  .headline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    padding-inline: 0.2em;
+  }
+
+  .big {
+    font-size: 1.6em;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .sub {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .chart {
+    padding: 0.8em;
+  }
+
+  .bars {
+    display: flex;
+    gap: 0.45em;
+    margin-top: 1.7em;
+  }
+
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35em;
+  }
+
+  .bar-track {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 4.4em;
+  }
+
+  .bar {
+    width: 100%;
+    border-radius: 0.3em;
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .bar-best {
+    background: var(--color-pink);
+  }
+
+  .marker {
+    position: absolute;
+    left: 50%;
+    top: -1.75em;
+    padding: 0.25em 0.5em;
+    border-radius: 0.4em;
+    background: var(--app-text);
+    color: var(--color-coal);
+    font-size: 0.55em;
+    font-weight: 800;
+    white-space: nowrap;
+    translate: -50% 0;
+  }
+
+  .day {
+    font-size: 0.55em;
+    font-weight: 700;
+    color: var(--app-muted);
+  }
+
+  .agenda {
+    padding: 0.2em 0.8em;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    height: 2.7em;
+    border-radius: 0.6em;
+  }
+
+  .row + .row {
+    border-top: 0.06em solid var(--app-line);
+  }
+
+  .row-icon {
+    display: grid;
+    place-items: center;
+    width: 1.7em;
+    height: 1.7em;
+    flex: none;
+    border-radius: 999px;
+  }
+
+  .row-icon :global(svg) {
+    width: 0.85em;
+    height: 0.85em;
+  }
+
+  .row-icon-deal {
+    background: var(--color-butter);
+    color: var(--color-coal);
+  }
+
+  .row-icon-post {
+    background: color-mix(in srgb, var(--color-pink) 20%, transparent);
+    color: var(--color-pink);
+  }
+
+  .row-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .row-title {
+    font-size: 0.64em;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .row-detail {
+    display: grid;
+    font-size: 0.56em;
+    color: var(--app-muted);
+  }
+
+  .row-detail > * {
+    grid-area: 1 / 1;
+  }
+
+  .new-time {
+    color: var(--color-pink);
+  }
+
+  /* Without the script, show where each scene ends up. */
+  [data-draft],
+  [data-old-time] {
+    opacity: 0;
+  }
+
+  .due {
+    background: color-mix(in srgb, var(--color-butter) 22%, transparent);
+    color: var(--color-butter);
+  }
+
+  .toast {
+    align-self: center;
+    padding: 0.7em 1.2em;
+    background: var(--app-text);
+    color: var(--color-coal);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { initFeatureScreen } from '../../scripts/feature-screens';
+
+  document.querySelectorAll<HTMLElement>('[data-feature-panel="plan"]').forEach((panel) => {
+    initFeatureScreen(panel, [
+      // Best time: the reach for the post's topic fills in, Thursday wins, and the post is scheduled.
+      (scene) => {
+        const q = gsap.utils.selector(scene);
+        return gsap
+          .timeline()
+          .from(q('[data-post]'), { y: '1em', opacity: 0, duration: 0.5, ease: 'power3.out' })
+          .set(q('[data-scheduled]'), { scale: 0, opacity: 0 }, 0)
+          .set(q('[data-draft]'), { opacity: 1 }, 0)
+          .from(q('[data-bar]'), { scaleY: 0, transformOrigin: '50% 100%', duration: 0.5, stagger: 0.06, ease: 'power2.out' }, 0.4)
+          .from(q('[data-best]'), { backgroundColor: 'rgba(255,255,255,0.16)', duration: 0.3 }, 1.1)
+          .from(q('[data-marker]'), { y: '-0.8em', opacity: 0, duration: 0.4, ease: 'back.out(2)' }, 1.15)
+          .from(q('[data-headline] > *'), { y: '0.5em', opacity: 0, duration: 0.4, stagger: 0.12 }, 1.4)
+          .to(q('[data-draft]'), { opacity: 0, duration: 0.2 }, 2.3)
+          .to(q('[data-scheduled]'), { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(2.5)' }, 2.35)
+          .addLabel('rest');
+      },
+      // Brand deals: deal dates are pinned and a post moves out of their way.
+      (scene) => {
+        const q = gsap.utils.selector(scene);
+        return gsap
+          .timeline()
+          .from(q('[data-headline] > *'), { y: '0.5em', opacity: 0, duration: 0.4, stagger: 0.1 })
+          .from(q('[data-row]'), { y: '0.6em', opacity: 0, duration: 0.4, stagger: 0.12 }, 0.3)
+          .fromTo(
+            q('[data-deal]'),
+            { boxShadow: 'inset 0 0 0 0.1em rgba(242,217,138,0)' },
+            { boxShadow: 'inset 0 0 0 0.1em rgba(242,217,138,0.9)', duration: 0.35, stagger: 0.15 },
+            1.1,
+          )
+          .fromTo(q('[data-old-time]'), { opacity: 1, y: 0 }, { opacity: 0, y: '-0.4em', duration: 0.3, immediateRender: true }, 1.8)
+          .fromTo(q('[data-new-time]'), { opacity: 0, y: '0.4em' }, { opacity: 1, y: 0, duration: 0.3 }, 1.9)
+          .from(q('[data-moved]'), { scale: 0, opacity: 0, duration: 0.4, ease: 'back.out(2.5)' }, 1.95)
+          .from(q('[data-toast]'), { y: '1em', opacity: 0, duration: 0.45, ease: 'back.out(2)' }, 2.5)
+          .addLabel('rest');
+      },
+    ]);
+  });
+</script>

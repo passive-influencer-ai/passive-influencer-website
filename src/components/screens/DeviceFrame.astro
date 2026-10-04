@@ -1,0 +1,159 @@
+---
+// A browser window or phone that sits in the feature panel and runs off its
+// edge, so the screen reads as part of a bigger app.
+interface Props {
+  kind: 'browser' | 'phone';
+}
+
+const { kind } = Astro.props;
+---
+
+<div data-device class:list={['device app', `device-${kind}`]}>
+  {
+    kind === 'browser' ? (
+      <div class="browser-bar" aria-hidden="true">
+        <span class="light" />
+        <span class="light" />
+        <span class="light" />
+        <span class="address">passiveinfluencer.ai</span>
+      </div>
+    ) : (
+      <div class="status-bar" aria-hidden="true">
+        <span>9:41</span>
+        <span class="island" />
+        <span class="status-icons">
+          <span class="signal">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span class="battery" />
+        </span>
+      </div>
+    )
+  }
+  <div class="device-screen">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .device {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+    background: var(--app-bg);
+    box-shadow: 0 1.5em 3em -1em rgb(0 0 0 / 0.35);
+  }
+
+  .device-browser {
+    left: 2.5em;
+    top: 3.2em;
+    width: 36em;
+    height: 26em;
+    border-radius: 0.9em;
+  }
+
+  .device-phone {
+    left: 8.5em;
+    top: 2.4em;
+    width: 17em;
+    height: 30em;
+    border: 0.5em solid #0c0c0d;
+    border-radius: 2.6em;
+  }
+
+  .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    height: 2em;
+    padding-inline: 0.9em;
+    flex: none;
+    background: #0f0f10;
+  }
+
+  .light {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  .address {
+    margin-left: 1em;
+    padding: 0.3em 1.2em;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.08);
+    font-size: 0.55em;
+    color: var(--app-muted);
+  }
+
+  .status-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 2.4em;
+    padding-inline: 1.5em;
+    flex: none;
+    font-size: 0.62em;
+    font-weight: 700;
+  }
+
+  .island {
+    position: absolute;
+    left: 50%;
+    top: 0.75em;
+    width: 7em;
+    height: 1.9em;
+    border-radius: 999px;
+    background: #0c0c0d;
+    transform: translateX(-50%);
+  }
+
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .signal {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.15em;
+    height: 0.8em;
+  }
+
+  .signal i {
+    width: 0.22em;
+    border-radius: 0.1em;
+    background: var(--app-text);
+  }
+
+  .signal i:nth-child(1) {
+    height: 40%;
+  }
+
+  .signal i:nth-child(2) {
+    height: 70%;
+  }
+
+  .signal i:nth-child(3) {
+    height: 100%;
+  }
+
+  .battery {
+    width: 1.6em;
+    height: 0.8em;
+    border-radius: 0.25em;
+    background: var(--app-text);
+  }
+
+  .device-screen {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+  }
+</style>
