@@ -229,15 +229,17 @@ const rollLetters = [...'Influence'];
     const stop = hero.querySelector<HTMLElement>('[data-stop]');
     const copy = hero.querySelector<HTMLElement>('[data-hero-copy]');
 
-    // The dome drops onto the "I", then hops and rolls along the top of each
-    // letter, holds on the last "e", falls away, and starts again. Quick moves,
+    // The dome drops onto the "I", then hops and rolls along the top of every
+    // other letter, holds on the last "e", falls away, and starts again. Quick moves,
     // then a beat of stillness.
     let roll: gsap.core.Timeline | undefined;
     const startRoll = () => {
       roll?.kill();
-      const tops = measureLetterTops();
+      // Land on every other letter (1st, 3rd, 5th...), always finishing on the last.
+      const letterTops = measureLetterTops();
+      const tops = letterTops.filter((_, index) => index % 2 === 0 || index === letterTops.length - 1);
       if (!dome || !tops.length) return;
-      const hop = dome.offsetHeight * 1.2;
+      const hop = dome.offsetHeight * 1.6;
       const first = tops[0];
       const last = tops[tops.length - 1];
 
@@ -251,9 +253,9 @@ const rollLetters = [...'Influence'];
         const from = tops[index];
         const peak = Math.min(from.y, top.y) - hop;
         roll!
-          .to(dome, { x: top.x, rotation: '+=360', duration: 0.56, ease: 'power1.inOut' }, '>-0.02')
-          .to(dome, { y: peak, duration: 0.28, ease: 'power2.out' }, '<')
-          .to(dome, { y: top.y, duration: 0.28, ease: 'power2.in' }, '>')
+          .to(dome, { x: top.x, rotation: '+=360', duration: 0.7, ease: 'power1.inOut' }, '>-0.02')
+          .to(dome, { y: peak, duration: 0.35, ease: 'power2.out' }, '<')
+          .to(dome, { y: top.y, duration: 0.35, ease: 'power2.in' }, '>')
           .to(dome, { scaleX: 1.15, scaleY: 0.8, duration: 0.08, ease: 'power1.out', yoyo: true, repeat: 1 });
       });
 
