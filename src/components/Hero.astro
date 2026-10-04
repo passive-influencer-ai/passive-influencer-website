@@ -74,9 +74,11 @@ const rollLetters = [...'Influence'];
     position: absolute;
     top: 0;
     left: 0;
-    width: 0.34em;
-    height: 0.17em;
-    border-radius: 0.17em 0.17em 0 0;
+    /* Same size as the top of the "e" above its crossbar: 0.548em across and
+       0.236em tall. */
+    width: 0.548em;
+    height: 0.236em;
+    border-radius: 0.274em 0.274em 0 0 / 0.236em 0.236em 0 0;
     background: var(--color-butter);
     transform-origin: 50% 100%;
     visibility: hidden;
@@ -235,31 +237,31 @@ const rollLetters = [...'Influence'];
       roll?.kill();
       const tops = measureLetterTops();
       if (!dome || !tops.length) return;
-      const hop = dome.offsetHeight * 1.6;
+      const hop = dome.offsetHeight * 1.2;
       const first = tops[0];
       const last = tops[tops.length - 1];
 
       roll = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
       roll
         .set(dome, { x: first.x, y: first.y - hop * 3, rotation: 0, scale: 1, opacity: 0, visibility: 'visible' })
-        .to(dome, { y: first.y, opacity: 1, duration: 0.45, ease: 'power2.in' })
-        .to(dome, { scaleX: 1.25, scaleY: 0.7, duration: 0.08, ease: 'power1.out', yoyo: true, repeat: 1 });
+        .to(dome, { y: first.y, opacity: 1, duration: 0.6, ease: 'power2.in' })
+        .to(dome, { scaleX: 1.2, scaleY: 0.75, duration: 0.1, ease: 'power1.out', yoyo: true, repeat: 1 });
 
       tops.slice(1).forEach((top, index) => {
         const from = tops[index];
         const peak = Math.min(from.y, top.y) - hop;
         roll!
-          .to(dome, { x: top.x, rotation: '+=360', duration: 0.32, ease: 'power1.inOut' }, '>-0.02')
-          .to(dome, { y: peak, duration: 0.16, ease: 'power2.out' }, '<')
-          .to(dome, { y: top.y, duration: 0.16, ease: 'power2.in' }, '>')
-          .to(dome, { scaleX: 1.2, scaleY: 0.75, duration: 0.06, ease: 'power1.out', yoyo: true, repeat: 1 });
+          .to(dome, { x: top.x, rotation: '+=360', duration: 0.56, ease: 'power1.inOut' }, '>-0.02')
+          .to(dome, { y: peak, duration: 0.28, ease: 'power2.out' }, '<')
+          .to(dome, { y: top.y, duration: 0.28, ease: 'power2.in' }, '>')
+          .to(dome, { scaleX: 1.15, scaleY: 0.8, duration: 0.08, ease: 'power1.out', yoyo: true, repeat: 1 });
       });
 
       roll
         .to(dome, { duration: 1 })
-        .to(dome, { x: last.x + dome.offsetWidth * 2, rotation: '+=180', duration: 0.5, ease: 'power1.in' })
-        .to(dome, { y: last.y - hop, duration: 0.2, ease: 'power2.out' }, '<')
-        .to(dome, { y: last.y + hop * 4, opacity: 0, duration: 0.3, ease: 'power2.in' }, '>');
+        .to(dome, { x: last.x + dome.offsetWidth * 2, rotation: '+=180', duration: 0.7, ease: 'power1.in' })
+        .to(dome, { y: last.y - hop, duration: 0.28, ease: 'power2.out' }, '<')
+        .to(dome, { y: last.y + hop * 4, opacity: 0, duration: 0.42, ease: 'power2.in' }, '>');
     };
 
     let resizeTimer: number | undefined;
