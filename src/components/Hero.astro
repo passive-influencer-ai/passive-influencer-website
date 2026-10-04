@@ -67,11 +67,11 @@ const rollLetters = [...'Influence'];
     position: absolute;
     top: 0;
     left: 0;
-    /* One and a half times the top of the "e" above its crossbar (0.548em
-       across and 0.236em tall), so it reads as a shape of its own. */
-    width: 0.822em;
-    height: 0.354em;
-    border-radius: 0.411em 0.411em 0 0 / 0.354em 0.354em 0 0;
+    /* Twice the top of the "e" above its crossbar (0.548em across and 0.236em
+       tall), so it reads as a shape of its own. */
+    width: 1.096em;
+    height: 0.472em;
+    border-radius: 0.548em 0.548em 0 0 / 0.472em 0.472em 0 0;
     background: var(--color-butter);
     transform-origin: 50% 100%;
     visibility: hidden;
@@ -232,7 +232,7 @@ const rollLetters = [...'Influence'];
       const letterTops = measureLetterTops();
       const tops = letterTops.filter((_, index) => index % 2 === 0 || index === letterTops.length - 1);
       if (!dome || !tops.length) return;
-      const hop = dome.offsetHeight * 1.2;
+      const hop = dome.offsetHeight * 0.9;
       const first = tops[0];
       const last = tops[tops.length - 1];
 
