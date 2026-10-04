@@ -1,0 +1,28 @@
+# Search and answer bots: allowed so PassiveInfluencers can be found and cited.
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Everyone else, including model-training bots (GPTBot, ClaudeBot,
+# Google-Extended), is allowed too. Add a Disallow block per bot to opt out.
+User-agent: *
+Allow: /
+
+Sitemap: https://passiveinfluencer.ai/sitemap.xml
