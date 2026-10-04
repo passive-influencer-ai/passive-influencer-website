@@ -1,5 +1,6 @@
 ---
 const linkedInUrl = 'https://www.linkedin.com/';
+const rollLetters = [...'Influence'];
 ---
 
 <section
@@ -9,7 +10,7 @@ const linkedInUrl = 'https://www.linkedin.com/';
   <div class="flex flex-1 items-center">
     <h1 class="hero-title w-full font-bold text-paper" aria-label="Influence, on autopilot.">
       <span class="block" aria-hidden="true">
-        <span data-line class="line block">Influ<span class="coin"><span class="glyph-anchor"><span data-dome class="dome"></span></span><span class="e-low">e</span></span>nce,</span>
+        <span data-line data-roll-line class="line relative block"><span data-baseline class="baseline"></span>{rollLetters.map((letter) => <span data-roll-letter>{letter}</span>)},<span data-dome class="dome"></span></span>
       </span>
       <span class="block text-right">
         <span data-line class="line inline-block"><button
@@ -51,45 +52,34 @@ const linkedInUrl = 'https://www.linkedin.com/';
 </section>
 
 <style>
-  /* Glyph measurements for Manrope Bold, in em: the "e" and "o" bowls run from
-     0.031em to 0.579em across, and from 0.016em below the baseline to 0.563em
-     above it, and the crossbar of the "e" runs from 0.236em to 0.327em. The
-     shapes below are sized to match. */
+  /* Glyph measurements for Manrope Bold, in em: the "o" bowl runs from 0.031em
+     to 0.579em across, and from 0.016em below the baseline to 0.563em above it.
+     The lime "o" is sized to match. */
   .hero-title {
     font-size: clamp(2.7rem, min(13.6vw, 21svh), 11rem);
     line-height: 0.92;
     letter-spacing: -0.055em;
   }
 
-  .coin {
-    position: relative;
-    display: inline-block;
-  }
-
-  /* Zero-size box sitting on the baseline, so children can be placed in em
-     from the baseline. */
-  .glyph-anchor {
-    position: relative;
+  /* Zero-size box on the baseline, used to measure where letters sit. */
+  .baseline {
     display: inline-block;
     width: 0;
     height: 0;
-    perspective: 4em;
   }
 
+  /* Half circle that hops along the tops of the letters in "Influence". The
+     script places it; until then it rests on the "I". */
   .dome {
     position: absolute;
-    left: 0.031em;
-    bottom: 0.327em;
-    width: 0.548em;
-    height: 0.236em;
-    border-radius: 0.274em 0.274em 0 0 / 0.236em 0.236em 0 0;
+    top: 0;
+    left: 0;
+    width: 0.34em;
+    height: 0.17em;
+    border-radius: 0.17em 0.17em 0 0;
     background: var(--color-butter);
-  }
-
-  /* Only the lower half of the "e" is a letter; the dome is its top half. */
-  .e-low {
-    display: inline-block;
-    clip-path: polygon(-1em var(--e-cut, 50%), 2em var(--e-cut, 50%), 2em 2em, -1em 2em);
+    transform-origin: 50% 100%;
+    visibility: hidden;
   }
 
   .pill-word {
@@ -158,20 +148,28 @@ const linkedInUrl = 'https://www.linkedin.com/';
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Line the cut of the "e" up with the dome's flat edge, whatever the font size.
-  const coin = hero?.querySelector<HTMLElement>('.coin');
-  const eLow = hero?.querySelector<HTMLElement>('.e-low');
+  // Where the dome sits on top of each letter of "Influence", measured from
+  // the font so it lands on the real ink, not the letter's box.
+  const rollLine = hero?.querySelector<HTMLElement>('[data-roll-line]');
   const dome = hero?.querySelector<HTMLElement>('[data-dome]');
-  const alignE = () => {
-    if (!eLow || !dome) return;
-    const eBox = eLow.getBoundingClientRect();
-    const domeBottom = dome.offsetTop + dome.offsetHeight + (dome.offsetParent as HTMLElement).getBoundingClientRect().top;
-    eLow.style.setProperty('--e-cut', `${Math.max(0, domeBottom - eBox.top)}px`);
+  const measureLetterTops = () => {
+    if (!rollLine || !dome) return [];
+    const lineBox = rollLine.getBoundingClientRect();
+    const baseline = rollLine.querySelector<HTMLElement>('[data-baseline]')!.getBoundingClientRect().top - lineBox.top;
+    const style = getComputedStyle(rollLine);
+    const context = document.createElement('canvas').getContext('2d')!;
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    return [...rollLine.querySelectorAll<HTMLElement>('[data-roll-letter]')].map((letter) => {
+      const box = letter.getBoundingClientRect();
+      const ink = context.measureText(letter.textContent ?? '');
+      const left = box.left - lineBox.left;
+      const centre = left + (ink.actualBoundingBoxRight - ink.actualBoundingBoxLeft) / 2;
+      return {
+        x: centre - dome.offsetWidth / 2,
+        y: baseline - ink.actualBoundingBoxAscent - dome.offsetHeight,
+      };
+    });
   };
-  if (coin) {
-    document.fonts.ready.then(alignE);
-    new ResizeObserver(alignE).observe(coin);
-  }
 
   // The pink "on" pill is a light/dark switch.
   const themeSwitch = hero?.querySelector<HTMLButtonElement>('[data-theme-switch]');
@@ -214,6 +212,14 @@ const linkedInUrl = 'https://www.linkedin.com/';
     });
   });
 
+  // Without motion, the dome simply rests on the "I".
+  if (reduceMotion && dome) {
+    document.fonts.ready.then(() => {
+      const [first] = measureLetterTops();
+      if (first) gsap.set(dome, { x: first.x, y: first.y, visibility: 'visible' });
+    });
+  }
+
   if (hero && !reduceMotion) {
     const lines = hero.querySelectorAll<HTMLElement>('[data-line]');
     const dotWrap = hero.querySelector<HTMLElement>('[data-dot-wrap]');
@@ -221,24 +227,77 @@ const linkedInUrl = 'https://www.linkedin.com/';
     const stop = hero.querySelector<HTMLElement>('[data-stop]');
     const copy = hero.querySelector<HTMLElement>('[data-hero-copy]');
 
-    // The dome keeps spinning like a coin on top of the "e".
-    const spinDome = () =>
-      gsap.to(dome, { rotationY: '+=360', duration: 1.4, ease: 'power2.inOut', repeat: -1, repeatDelay: 0.8 });
+    // The dome drops onto the "I", then hops and rolls along the top of each
+    // letter, holds on the last "e", falls away, and starts again. Quick moves,
+    // then a beat of stillness.
+    let roll: gsap.core.Timeline | undefined;
+    const startRoll = () => {
+      roll?.kill();
+      const tops = measureLetterTops();
+      if (!dome || !tops.length) return;
+      const hop = dome.offsetHeight * 1.6;
+      const first = tops[0];
+      const last = tops[tops.length - 1];
 
-    // The "o" keeps bouncing on the baseline, squashing as it lands.
+      roll = gsap.timeline({ repeat: -1, repeatDelay: 0.4 });
+      roll
+        .set(dome, { x: first.x, y: first.y - hop * 3, rotation: 0, scale: 1, opacity: 0, visibility: 'visible' })
+        .to(dome, { y: first.y, opacity: 1, duration: 0.45, ease: 'power2.in' })
+        .to(dome, { scaleX: 1.25, scaleY: 0.7, duration: 0.08, ease: 'power1.out', yoyo: true, repeat: 1 });
+
+      tops.slice(1).forEach((top, index) => {
+        const from = tops[index];
+        const peak = Math.min(from.y, top.y) - hop;
+        roll!
+          .to(dome, { x: top.x, rotation: '+=360', duration: 0.32, ease: 'power1.inOut' }, '>-0.02')
+          .to(dome, { y: peak, duration: 0.16, ease: 'power2.out' }, '<')
+          .to(dome, { y: top.y, duration: 0.16, ease: 'power2.in' }, '>')
+          .to(dome, { scaleX: 1.2, scaleY: 0.75, duration: 0.06, ease: 'power1.out', yoyo: true, repeat: 1 });
+      });
+
+      roll
+        .to(dome, { duration: 1 })
+        .to(dome, { x: last.x + dome.offsetWidth * 2, rotation: '+=180', duration: 0.5, ease: 'power1.in' })
+        .to(dome, { y: last.y - hop, duration: 0.2, ease: 'power2.out' }, '<')
+        .to(dome, { y: last.y + hop * 4, opacity: 0, duration: 0.3, ease: 'power2.in' }, '>');
+    };
+
+    let resizeTimer: number | undefined;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => roll && startRoll(), 200);
+    });
+
+    // The "o" bounces twice, settles, and rests for a second before going again.
     const bounceDot = () =>
       gsap
-        .timeline({ repeat: -1 })
-        .to(dot, { y: '-0.24em', scaleX: 0.94, scaleY: 1.06, duration: 0.42, ease: 'power2.out' })
-        .to(dot, { y: 0, scaleX: 1, scaleY: 1, duration: 0.38, ease: 'power2.in' })
-        .to(dot, { scaleX: 1.14, scaleY: 0.84, duration: 0.09, ease: 'power1.out', yoyo: true, repeat: 1 });
+        .timeline({ repeat: -1, repeatDelay: 1 })
+        .to(dot, { y: '-0.3em', scaleX: 0.92, scaleY: 1.08, duration: 0.3, ease: 'power2.out' })
+        .to(dot, { y: 0, scaleX: 1, scaleY: 1, duration: 0.26, ease: 'power2.in' })
+        .to(dot, { scaleX: 1.16, scaleY: 0.82, duration: 0.07, ease: 'power1.out', yoyo: true, repeat: 1 })
+        .to(dot, { y: '-0.09em', duration: 0.15, ease: 'power2.out' })
+        .to(dot, { y: 0, duration: 0.15, ease: 'power2.in' })
+        .to(dot, { scaleX: 1.06, scaleY: 0.94, duration: 0.05, ease: 'power1.out', yoyo: true, repeat: 1 });
+
+    // The pink "on" buzzes like a phone, then goes still for a second.
+    const buzzPill = () =>
+      gsap.timeline({ repeat: -1, repeatDelay: 1 }).to(themeSwitch!, {
+        keyframes: {
+          rotation: [0, -4, 4, -4, 4, -3, 3, -2, 2, 0],
+          x: [0, -3, 3, -3, 3, -2, 2, -1, 1, 0],
+        },
+        duration: 0.55,
+        ease: 'none',
+      });
 
     // Entrance: lines rise, then each shape lands in its letter.
     const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
     intro
       .from(lines, { yPercent: 70, rotate: 4, opacity: 0, duration: 1, stagger: 0.14 })
-      .from(dome, { scale: 0, transformOrigin: '50% 100%', duration: 0.8, ease: 'back.out(2)', onComplete: spinDome }, 0.4)
-      .from(pill, { scaleX: 0, transformOrigin: '0% 50%', duration: 0.8, ease: 'back.out(2)' }, 0.55)
+      .add(() => {
+        document.fonts.ready.then(startRoll);
+      }, 1)
+      .from(pill, { scaleX: 0, transformOrigin: '0% 50%', duration: 0.8, ease: 'back.out(2)', onComplete: buzzPill }, 0.55)
       .from(dot, { scale: 0, duration: 0.9, ease: 'elastic.out(1, 0.45)', onComplete: bounceDot }, 0.7)
       .from(stop, { y: '-1.6em', rotate: -90, opacity: 0, duration: 0.9, ease: 'bounce.out' }, 0.85)
       .from(copy, { y: 24, opacity: 0, duration: 0.8 }, 0.9);
