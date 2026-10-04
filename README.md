@@ -53,5 +53,8 @@ The parent CITAble workspace at `../..` remains the bounded source for organisat
 
 ## Notes
 
-- LinkedIn button and QR currently point to `https://www.linkedin.com/` as a placeholder. Replace both when the company page is ready.
+- The primary call to action is "Join the waitlist", a `mailto:` link to `hello@passiveinfluencer.ai` with the subject "I want to join the waitlist" (hero and footer). The footer also shows the address for people without a mail app.
+- `public/robots.txt` allows search, answer and training bots, and points to `public/sitemap.xml`. Add a sitemap entry for every new page.
+- `public/og.png` (1200 x 630) is the link-preview image used by the Open Graph tags in `src/layouts/Layout.astro`, which also holds the Organization JSON-LD.
+- No LinkedIn link until the company page exists.
 - Do not invent product availability, creator results, testimonials, or private data in this repository.
