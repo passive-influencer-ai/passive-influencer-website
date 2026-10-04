@@ -67,11 +67,11 @@ const rollLetters = [...'Influence'];
     position: absolute;
     top: 0;
     left: 0;
-    /* Same size as the top of the "e" above its crossbar: 0.548em across and
-       0.236em tall. */
-    width: 0.548em;
-    height: 0.236em;
-    border-radius: 0.274em 0.274em 0 0 / 0.236em 0.236em 0 0;
+    /* One and a half times the top of the "e" above its crossbar (0.548em
+       across and 0.236em tall), so it reads as a shape of its own. */
+    width: 0.822em;
+    height: 0.354em;
+    border-radius: 0.411em 0.411em 0 0 / 0.354em 0.354em 0 0;
     background: var(--color-butter);
     transform-origin: 50% 100%;
     visibility: hidden;
@@ -223,8 +223,8 @@ const rollLetters = [...'Influence'];
     const copy = hero.querySelector<HTMLElement>('[data-hero-copy]');
 
     // The dome drops onto the "I", then hops and rolls along the top of every
-    // other letter, holds on the last "e", falls away, and starts again. Quick moves,
-    // then a beat of stillness.
+    // other letter, holds on the last "e", falls away, and starts again. Unhurried
+    // moves, then a beat of stillness.
     let roll: gsap.core.Timeline | undefined;
     const startRoll = () => {
       roll?.kill();
@@ -232,7 +232,7 @@ const rollLetters = [...'Influence'];
       const letterTops = measureLetterTops();
       const tops = letterTops.filter((_, index) => index % 2 === 0 || index === letterTops.length - 1);
       if (!dome || !tops.length) return;
-      const hop = dome.offsetHeight * 1.6;
+      const hop = dome.offsetHeight * 1.2;
       const first = tops[0];
       const last = tops[tops.length - 1];
 
@@ -257,6 +257,9 @@ const rollLetters = [...'Influence'];
         .to(dome, { x: last.x + dome.offsetWidth * 2, rotation: '+=180', duration: 0.7, ease: 'power1.in' })
         .to(dome, { y: last.y - hop, duration: 0.28, ease: 'power2.out' }, '<')
         .to(dome, { y: last.y + hop * 4, opacity: 0, duration: 0.42, ease: 'power2.in' }, '>');
+
+      // Play the whole loop at 60% speed so the dome rolls rather than darts.
+      roll.timeScale(0.6);
     };
 
     let resizeTimer: number | undefined;
