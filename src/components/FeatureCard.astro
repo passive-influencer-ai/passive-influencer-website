@@ -4,11 +4,12 @@ interface Props {
   title: string;
   description: string;
   accent: 'lime' | 'pink' | 'butter';
-  hint: string;
+  screen: 'trends' | 'plan' | 'deals';
+  screenLabel: string;
   reverse?: boolean;
 }
 
-const { label, title, description, accent, hint, reverse = false } = Astro.props;
+const { label, title, description, accent, screen, screenLabel, reverse = false } = Astro.props;
 
 const accentText = {
   lime: 'text-lime-text',
@@ -16,11 +17,6 @@ const accentText = {
   butter: 'text-butter-text',
 }[accent];
 
-const accentBg = {
-  lime: 'bg-lime',
-  pink: 'bg-pink',
-  butter: 'bg-butter',
-}[accent];
 ---
 
 <article
@@ -48,29 +44,58 @@ const accentBg = {
   </div>
 
   <div
-    class="feature-screen relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-ink-soft p-5 md:p-7"
-    role="img"
-    aria-label={`Placeholder screen: ${hint}`}
+    data-feature-panel={screen}
+    class="feature-panel relative -mx-6 aspect-[5/4] overflow-clip rounded-[1.5rem] md:mx-0"
+    style={`--accent: var(--color-${accent})`}
+    role="group"
+    aria-label={screenLabel}
   >
-    <div class="flex gap-1.5" aria-hidden="true">
-      <span class="h-2.5 w-2.5 rounded-full bg-paper/15"></span>
-      <span class="h-2.5 w-2.5 rounded-full bg-paper/15"></span>
-      <span class="h-2.5 w-2.5 rounded-full bg-paper/15"></span>
-    </div>
-
-    <div class="mt-6 flex flex-col gap-3" aria-hidden="true">
-      <span class="shimmer h-4 w-2/3 rounded-full"></span>
-      <span class="shimmer h-4 w-1/2 rounded-full"></span>
-      <span class="shimmer mt-3 h-24 w-full rounded-2xl md:h-32"></span>
-      <span class="shimmer h-4 w-3/4 rounded-full"></span>
-    </div>
-
-    <span
-      class={`absolute bottom-5 right-5 inline-flex items-center gap-2 rounded-full ${accentBg} px-4 py-2 text-sm font-semibold text-coal md:bottom-7 md:right-7`}
-      aria-hidden="true"
-    >
-      <span class="h-2 w-2 rounded-full bg-coal"></span>
-      {hint}
-    </span>
+    <span class:list={['panel-shape', `panel-shape-${accent}`]} aria-hidden="true"></span>
+    <slot />
+    <span class="panel-caption" aria-hidden="true">Illustrative example</span>
   </div>
 </article>
+
+<style>
+  /* Big, lighter versions of the card's brand shape behind the device. */
+  .panel-shape {
+    position: absolute;
+    background: var(--accent-tint);
+  }
+
+  .panel-shape-lime {
+    right: -18%;
+    top: -30%;
+    width: 75%;
+    aspect-ratio: 1;
+    border-radius: 999px;
+  }
+
+  .panel-shape-pink {
+    left: -20%;
+    top: 34%;
+    width: 140%;
+    height: 34%;
+    border-radius: 999px;
+    transform: rotate(-12deg);
+  }
+
+  .panel-shape-butter {
+    left: -12%;
+    bottom: -8%;
+    width: 85%;
+    aspect-ratio: 2 / 1;
+    border-radius: 999px 999px 0 0;
+  }
+
+  .panel-caption {
+    position: absolute;
+    left: 4%;
+    top: 3.2%;
+    font-size: max(0.6rem, 1.9cqw);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgb(18 18 18 / 0.6);
+  }
+</style>

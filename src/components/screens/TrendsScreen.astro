@@ -1,0 +1,400 @@
+---
+import DeviceFrame from './DeviceFrame.astro';
+import Icon from './Icon.astro';
+
+// Layout is in em on the browser's screen, which is 36em by 24em (the right
+// and bottom edges are cut off by the panel). The SVG uses the same units.
+const SIDEBAR = 8.6;
+const ROW_TOP = 3.8;
+const ROW_HEIGHT = 1.9;
+
+const sources = [
+  { icon: 'video', label: 'Short video', on: true },
+  { icon: 'photo', label: 'Photos', on: false },
+  { icon: 'news', label: 'News', on: true },
+  { icon: 'search', label: 'Search', on: false },
+  { icon: 'community', label: 'Community', on: true },
+] as const;
+const topics = ['Skincare', 'Travel'];
+
+const hub = { x: 13.6, y: 9.6 };
+const nodes = [
+  { x: 11.9, y: 7.4 },
+  { x: 15.5, y: 7.7 },
+  { x: 12.0, y: 12.0 },
+  { x: 15.6, y: 11.5 },
+];
+
+// Each signal travels from a selected source to a node, then into the hub.
+const rowCentre = (index: number) => ROW_TOP + index * ROW_HEIGHT + ROW_HEIGHT / 2;
+const signals = [
+  { from: { x: SIDEBAR, y: rowCentre(0) }, via: nodes[0] },
+  { from: { x: SIDEBAR, y: rowCentre(2) }, via: nodes[0] },
+  { from: { x: SIDEBAR, y: rowCentre(4) }, via: nodes[2] },
+  { from: { x: SIDEBAR, y: 16.9 }, via: nodes[2] },
+];
+
+const IDEA_LEFT = 17.8;
+const ideas = [
+  { title: '30-second night routine', match: '88%', top: 2.6 },
+  { title: '3 hidden spots, 1 weekend', match: '81%', top: 8.6 },
+  { title: 'Ingredient myths, busted', match: '76%', top: 14.6 },
+];
+const IDEA_HEIGHT = 5.4;
+---
+
+<div class="panel-canvas" aria-hidden="true">
+  <DeviceFrame kind="browser">
+    <div data-scene class="scene">
+      <aside class="sidebar" style={`width: ${SIDEBAR}em`}>
+        <svg viewBox="0 0 32 32" class="logo">
+          <rect x="1.25" y="1.25" width="29.5" height="29.5" rx="8" fill="none" stroke="#c6f24a" stroke-width="2.5"></rect>
+          <circle cx="12" cy="12" r="5" fill="#c6f24a"></circle>
+          <path d="M13 25a7 7 0 0 1 14 0z" fill="#f2d98a"></path>
+        </svg>
+        <span class="pos" style="left: 0.9em; top: 2.9em"><span class="app-label">Your sources</span></span>
+        {
+          sources.map((source, index) => (
+            <div class:list={['source', source.on && 'on']} style={`top: ${ROW_TOP + index * ROW_HEIGHT}em`}>
+              <Icon name={source.icon} />
+              <span class="app-text">{source.label}</span>
+              {source.on && <span class="tick" />}
+            </div>
+          ))
+        }
+        <span class="pos" style="left: 0.9em; top: 14.1em"><span class="app-label">Your topics</span></span>
+        {
+          topics.map((topic, index) => (
+            <span class="pos" style={`left: 0.9em; top: ${15.4 + index * 1.6}em`}>
+              <span class="app-chip topic">{topic}</span>
+            </span>
+          ))
+        }
+      </aside>
+
+      <span class="pos" style={`left: ${SIDEBAR + 1}em; top: 1em`}><span class="app-label">Agent network</span></span>
+
+      <svg class="network" viewBox="0 0 36 24">
+        {signals.map((s) => <line class="wire" x1={s.from.x} y1={s.from.y} x2={s.via.x} y2={s.via.y} />)}
+        {nodes.map((n) => <line class="wire" x1={n.x} y1={n.y} x2={hub.x} y2={hub.y} />)}
+        <line class="wire" x1={nodes[0].x} y1={nodes[0].y} x2={nodes[1].x} y2={nodes[1].y} />
+        <line class="wire" x1={nodes[2].x} y1={nodes[2].y} x2={nodes[3].x} y2={nodes[3].y} />
+        {
+          ideas.map((idea) => (
+            <line
+              data-out
+              class="out"
+              x1={hub.x}
+              y1={hub.y}
+              x2={IDEA_LEFT}
+              y2={idea.top + IDEA_HEIGHT / 2}
+            />
+          ))
+        }
+        {nodes.map((n) => <circle data-node class="node" cx={n.x} cy={n.y} r="0.55" />)}
+        <circle data-hub class="hub-glow" cx={hub.x} cy={hub.y} r="1.6" />
+        <circle class="hub" cx={hub.x} cy={hub.y} r="1" />
+        {
+          signals.map((s) => (
+            <circle
+              data-signal
+              data-from={`${s.from.x},${s.from.y}`}
+              data-via={`${s.via.x},${s.via.y}`}
+              data-to={`${hub.x},${hub.y}`}
+              class="signal"
+              cx={hub.x}
+              cy={hub.y}
+              r="0.28"
+              opacity="0"
+            />
+          ))
+        }
+      </svg>
+
+      <span class="found-wrap" style={`left: ${hub.x}em`}>
+        <span data-found class="app-chip found">
+          <Icon name="spark" />Trend found
+        </span>
+      </span>
+
+      <div class="ideas-head" style={`left: ${IDEA_LEFT}em`}>
+        <span class="app-label">Ideas to review</span>
+        <span class="app-chip app-chip-soft">3 new</span>
+      </div>
+      {
+        ideas.map((idea, index) => (
+          <div
+            data-idea
+            class="idea app-card"
+            style={`left: ${IDEA_LEFT}em; top: ${idea.top}em; height: ${IDEA_HEIGHT}em`}
+          >
+            <div class="idea-top">
+              <span class="idea-icon">
+                <Icon name="spark" />
+              </span>
+              <span class="app-text idea-title">{idea.title}</span>
+            </div>
+            <div class="idea-bottom">
+              <span class="match">
+                <span class="app-label">Trend match</span>
+                <strong>{idea.match}</strong>
+              </span>
+              <span class="actions">
+                <span data-approve={index === 0 ? '' : undefined} class="action yes">
+                  <Icon name="check" />
+                </span>
+                <span class="action no">
+                  <Icon name="close" />
+                </span>
+              </span>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </DeviceFrame>
+</div>
+
+<style>
+  .scene {
+    position: absolute;
+    inset: 0;
+  }
+
+  .sidebar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: #1c1c1f;
+  }
+
+  .logo {
+    position: absolute;
+    left: 0.9em;
+    top: 0.9em;
+    width: 1.5em;
+    height: 1.5em;
+  }
+
+  .pos {
+    position: absolute;
+    line-height: 1;
+  }
+
+  .source {
+    position: absolute;
+    left: 0.6em;
+    right: 0.6em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    height: 1.6em;
+    margin-top: 0.15em;
+    padding-inline: 0.5em;
+    border-radius: 0.6em;
+    color: var(--app-muted);
+  }
+
+  .source.on {
+    background: var(--app-raised);
+    color: var(--app-text);
+  }
+
+  .tick {
+    flex: none;
+    width: 0.45em;
+    height: 0.45em;
+    margin-left: auto;
+    border-radius: 999px;
+    background: var(--color-lime);
+  }
+
+  .topic {
+    background: color-mix(in srgb, var(--color-lime) 18%, transparent);
+    color: var(--color-lime);
+  }
+
+  .network {
+    position: absolute;
+    inset: 0;
+    width: 36em;
+    height: 24em;
+    overflow: visible;
+  }
+
+  .wire {
+    stroke: rgb(255 255 255 / 0.14);
+    stroke-width: 0.08;
+  }
+
+  .out {
+    stroke: var(--color-lime);
+    stroke-width: 0.08;
+    stroke-dasharray: 0.3 0.3;
+  }
+
+  .node {
+    fill: var(--app-raised);
+    stroke: rgb(255 255 255 / 0.3);
+    stroke-width: 0.08;
+  }
+
+  .hub {
+    fill: var(--color-lime);
+  }
+
+  .hub-glow {
+    fill: color-mix(in srgb, var(--color-lime) 22%, transparent);
+  }
+
+  .signal {
+    fill: var(--color-lime);
+  }
+
+  .found-wrap {
+    position: absolute;
+    top: 4.6em;
+    transform: translateX(-50%);
+  }
+
+  .found {
+    background: var(--color-lime);
+    color: var(--color-coal);
+  }
+
+  .ideas-head {
+    position: absolute;
+    top: 0.7em;
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+
+  .idea {
+    position: absolute;
+    width: 13.2em;
+    padding: 0.8em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .idea-top {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    min-width: 0;
+  }
+
+  .idea-icon {
+    display: grid;
+    place-items: center;
+    width: 1.6em;
+    height: 1.6em;
+    flex: none;
+    border-radius: 0.5em;
+    background: var(--color-lime);
+    color: var(--color-coal);
+  }
+
+  .idea-icon :global(svg) {
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  .idea-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .idea-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .match {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5em;
+  }
+
+  .match strong {
+    font-size: 0.85em;
+    color: var(--color-lime);
+  }
+
+  .actions {
+    display: flex;
+    gap: 0.35em;
+  }
+
+  .action {
+    display: grid;
+    place-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 999px;
+  }
+
+  .action :global(svg) {
+    width: 0.8em;
+    height: 0.8em;
+  }
+
+  .yes {
+    background: var(--color-lime);
+    color: var(--color-coal);
+  }
+
+  .no {
+    box-shadow: inset 0 0 0 0.08em rgb(255 255 255 / 0.25);
+    color: var(--app-muted);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { initFeatureScreen } from '../../scripts/feature-screens';
+
+  const point = (value: string | undefined) => {
+    const [x, y] = (value ?? '0,0').split(',');
+    return { cx: Number(x), cy: Number(y) };
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-feature-panel="trends"]').forEach((panel) => {
+    initFeatureScreen(panel, [
+      (scene) => {
+        const q = gsap.utils.selector(scene);
+        const hubGlow = q('[data-hub]');
+        const tl = gsap.timeline();
+
+        // Signals run from the chosen sources, through the network, into the hub.
+        q<SVGCircleElement>('[data-signal]').forEach((signal, index) => {
+          const start = index * 0.25;
+          tl.set(signal, { attr: { ...point(signal.dataset.from), opacity: 1 } }, start)
+            .to(signal, { attr: point(signal.dataset.via), duration: 0.5, ease: 'power1.in' }, start)
+            .to(signal, { attr: point(signal.dataset.to), duration: 0.4, ease: 'power1.out' })
+            .set(signal, { attr: { opacity: 0 } })
+            .fromTo(
+              hubGlow,
+              { scale: 1 },
+              { scale: 1.35, duration: 0.18, yoyo: true, repeat: 1, transformOrigin: '50% 50%' },
+              '<',
+            );
+        });
+
+        tl.from(q('[data-found]'), { scale: 0, opacity: 0, duration: 0.5, ease: 'back.out(2.5)' }, 1.9)
+          .from(q('[data-out]'), { opacity: 0, duration: 0.4, stagger: 0.12 }, 2.2)
+          .from(q('[data-idea]'), { x: '-1.2em', opacity: 0, duration: 0.6, stagger: 0.2, ease: 'power3.out' }, 2.3)
+          .to(q('[data-approve]'), { scale: 1.25, duration: 0.15, yoyo: true, repeat: 1 }, 3.5)
+          .to(q('[data-idea]')[0], { boxShadow: '0 0 0 0.12em #c6f24a', duration: 0.3 }, 3.6)
+          .addLabel('rest', 4)
+          .to({}, { duration: 1.6 })
+          .to([...q('[data-idea]'), ...q('[data-out]'), ...q('[data-found]')], { opacity: 0, duration: 0.4 });
+
+        return tl;
+      },
+    ]);
+  });
+</script>

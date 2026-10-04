@@ -1,0 +1,524 @@
+---
+import DeviceFrame from './DeviceFrame.astro';
+import Icon from './Icon.astro';
+
+// Placeholder brands only: a coloured shape and a category, never a real name.
+const inbox = [
+  { name: 'Skincare brand', detail: 'Review video', fit: '92%', colour: '#f2d98a', keep: true },
+  { name: 'Energy drink', detail: 'Sponsored post', fit: '41%', colour: '#8fb8ff', keep: false },
+  { name: 'Outdoor gear', detail: 'Product launch', fit: '78%', colour: '#c6f24a', keep: true },
+  { name: 'Fast fashion', detail: 'Haul video', fit: '23%', colour: '#f3a9c7', keep: false },
+];
+
+const matches = [
+  { name: 'Outdoor gear', fit: '95%', colour: '#c6f24a', top: true },
+  { name: 'Coffee', fit: '64%', colour: '#d9a273', top: false },
+  { name: 'Fitness app', fit: '88%', colour: '#8fb8ff', top: true },
+  { name: 'Fast food', fit: '22%', colour: '#ff9f7a', top: false },
+  { name: 'Travel gear', fit: '81%', colour: '#f3a9c7', top: false },
+  { name: 'Skincare', fit: '70%', colour: '#f2d98a', top: false },
+];
+
+const nav = ['home', 'deals', 'calendar', 'chat'] as const;
+---
+
+<div class="panel-canvas">
+  <DeviceFrame kind="browser">
+    <aside class="rail" aria-hidden="true">
+      <svg viewBox="0 0 32 32" class="logo">
+        <rect x="1.25" y="1.25" width="29.5" height="29.5" rx="8" fill="none" stroke="#c6f24a" stroke-width="2.5"></rect>
+        <circle cx="12" cy="12" r="5" fill="#c6f24a"></circle>
+        <path d="M13 25a7 7 0 0 1 14 0z" fill="#f2d98a"></path>
+      </svg>
+      {
+        nav.map((icon) => (
+          <span class:list={['rail-item', icon === 'deals' && 'on']}>
+            <Icon name={icon} />
+          </span>
+        ))
+      }
+    </aside>
+
+    <div class="header">
+      <strong class="title" aria-hidden="true">Brand deals</strong>
+      <div class="tabs">
+        <button type="button" data-tab class="app-tab" aria-pressed="true">
+          Inbound<span data-tab-progress class="app-tab-progress"></span>
+        </button>
+        <button type="button" data-tab class="app-tab" aria-pressed="false">
+          Outbound<span data-tab-progress class="app-tab-progress"></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scenes" aria-hidden="true">
+      <div data-scene class="scene">
+        <div class="column left">
+          <div class="column-head">
+            <span class="app-label">Inbox</span>
+            <span class="app-chip app-chip-soft">4 new</span>
+          </div>
+          <span data-scan class="scan"></span>
+          {
+            inbox.map((deal) => (
+              <div data-deal data-drop={deal.keep ? undefined : ''} class="deal app-card">
+                <span class="avatar" style={`background: ${deal.colour}`} />
+                <span class="deal-text">
+                  <span class="name">{deal.name}</span>
+                  <span class="sub">{deal.detail}</span>
+                </span>
+                <span class="stack">
+                  <span class:list={['app-chip', deal.keep ? 'good' : 'app-chip-soft']}>{deal.fit}</span>
+                  {!deal.keep && (
+                    <span data-filtered class="app-chip filtered">
+                      Filtered
+                    </span>
+                  )}
+                </span>
+              </div>
+            ))
+          }
+        </div>
+
+        <div data-detail class="column right app-card detail">
+          <div class="detail-head">
+            <span class="avatar" style="background: #f2d98a"></span>
+            <span class="name">Skincare brand</span>
+            <span class="app-chip app-chip-soft">Inbound</span>
+          </div>
+          <span class="app-label">Fit score</span>
+          <strong class="big">92% fit</strong>
+          <div class="tags">
+            <span data-tag class="app-chip butter">Growth potential: High</span>
+            <span data-tag class="app-chip app-chip-soft">Matches your values</span>
+          </div>
+          <div class="buttons">
+            <span class="stack">
+              <span data-approve class="app-chip button butter-solid">Approve</span>
+              <span data-approved class="app-chip button butter-solid"><Icon name="check" />Approved</span>
+            </span>
+            <span class="app-chip button app-chip-soft">Decline</span>
+          </div>
+          <div data-step class="step">
+            <span class="step-icon"><Icon name="calendar" /></span>
+            <span class="app-text">Scheduled: Mon, 2 posts</span>
+          </div>
+          <div class="thread">
+            <span data-bubble class="bubble them">Offer: $1,200</span>
+            <span data-typing class="bubble us typing"><i></i><i></i><i></i></span>
+            <span data-bubble-reply class="bubble us">Agent: countered at $1,500</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-scene class="scene">
+        <div class="column left">
+          <div class="column-head">
+            <span class="app-label">Brand matches</span>
+            <span class="app-chip app-chip-soft">Agent scan</span>
+          </div>
+          <div class="grid">
+            {
+              matches.map((brand) => (
+                <div data-tile data-top={brand.top ? '' : undefined} class="tile app-card">
+                  <span class="avatar" style={`background: ${brand.colour}`} />
+                  <span class="name">{brand.name}</span>
+                  <span data-fit class:list={['app-chip', brand.top ? 'butter' : 'app-chip-soft']}>
+                    {brand.fit}
+                  </span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div data-pitch class="column right app-card detail">
+          <div class="detail-head">
+            <span class="spark"><Icon name="spark" /></span>
+            <span class="name">Pitch idea</span>
+            <span class="app-chip app-chip-soft">Outbound</span>
+          </div>
+          <div class="brand-row">
+            <span class="avatar" style="background: #c6f24a"></span>
+            <span class="name">Outdoor gear brand</span>
+          </div>
+          <div class="tags">
+            <span data-tag class="app-chip butter">Values match 95%</span>
+            <span data-tag class="app-chip app-chip-soft">Growth potential: High</span>
+          </div>
+          <strong data-idea-title class="idea-title">Weekend trail series, 3 videos</strong>
+          <span data-line class="app-line" style="width: 92%"></span>
+          <span data-line class="app-line" style="width: 70%"></span>
+          <div class="buttons">
+            <span class="stack">
+              <span data-send class="app-chip button butter-solid"><Icon name="send" />Send pitch</span>
+              <span data-sent class="app-chip button butter-solid"><Icon name="check" />Sent</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </DeviceFrame>
+</div>
+
+<style>
+  .rail {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3.2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+    padding-top: 0.9em;
+    background: #1c1c1f;
+  }
+
+  .logo {
+    width: 1.5em;
+    height: 1.5em;
+    margin-bottom: 0.6em;
+  }
+
+  .rail-item {
+    display: grid;
+    place-items: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 0.6em;
+    color: var(--app-muted);
+  }
+
+  .rail-item.on {
+    background: var(--app-raised);
+    color: var(--color-butter);
+  }
+
+  .header {
+    position: absolute;
+    left: 4.2em;
+    top: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 1.2em;
+  }
+
+  .title {
+    font-size: 0.95em;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0.4em;
+  }
+
+  .scenes {
+    position: absolute;
+    inset: 3.4em 0 0 4.2em;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+  }
+
+  .column {
+    position: absolute;
+    top: 0;
+  }
+
+  .left {
+    left: 0;
+    width: 11.4em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+  }
+
+  .right {
+    left: 12.2em;
+    width: 14.6em;
+  }
+
+  .column-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 1.4em;
+  }
+
+  .avatar {
+    width: 1.5em;
+    height: 1.5em;
+    flex: none;
+    border-radius: 0.45em;
+  }
+
+  .name {
+    font-size: 0.64em;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .sub {
+    font-size: 0.54em;
+    color: var(--app-muted);
+  }
+
+  .deal {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    height: 2.8em;
+    padding-inline: 0.65em;
+    border-radius: 0.8em;
+  }
+
+  .deal-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stack {
+    display: grid;
+    justify-items: end;
+  }
+
+  .stack > * {
+    grid-area: 1 / 1;
+  }
+
+  .good,
+  .butter {
+    background: color-mix(in srgb, var(--color-butter) 22%, transparent);
+    color: var(--color-butter);
+  }
+
+  .filtered {
+    background: var(--app-raised);
+    color: var(--app-muted);
+  }
+
+  .scan {
+    position: absolute;
+    left: -0.3em;
+    right: -0.3em;
+    top: 1.85em;
+    height: 0.14em;
+    border-radius: 999px;
+    background: var(--color-butter);
+    box-shadow: 0 0 0.8em var(--color-butter);
+    opacity: 0;
+    z-index: 1;
+  }
+
+  .detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55em;
+    padding: 0.9em;
+  }
+
+  .detail-head,
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+  }
+
+  .detail-head .app-chip {
+    margin-left: auto;
+  }
+
+  .big {
+    font-size: 1.5em;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .tags,
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
+
+  .buttons .stack {
+    justify-items: start;
+  }
+
+  .button {
+    padding: 0.6em 1.1em;
+  }
+
+  .butter-solid {
+    background: var(--color-butter);
+    color: var(--color-coal);
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding-top: 0.55em;
+    border-top: 0.06em solid var(--app-line);
+  }
+
+  .step-icon,
+  .spark {
+    display: grid;
+    place-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    flex: none;
+    border-radius: 0.45em;
+    background: var(--color-butter);
+    color: var(--color-coal);
+  }
+
+  .spark {
+    background: var(--color-lime);
+  }
+
+  .step-icon :global(svg),
+  .spark :global(svg) {
+    width: 0.85em;
+    height: 0.85em;
+  }
+
+  .thread {
+    display: grid;
+    gap: 0.3em;
+  }
+
+  .bubble {
+    justify-self: start;
+    padding: 0.55em 0.9em;
+    border-radius: 1em 1em 1em 0.3em;
+    background: var(--app-raised);
+    font-size: 0.58em;
+    font-weight: 700;
+  }
+
+  .us {
+    grid-area: 2 / 1;
+    justify-self: end;
+    border-radius: 1em 1em 0.3em 1em;
+    background: var(--color-butter);
+    color: var(--color-coal);
+  }
+
+  .typing {
+    display: flex;
+    gap: 0.3em;
+    padding-block: 0.8em;
+    opacity: 0;
+  }
+
+  .typing i {
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 999px;
+    background: var(--color-coal);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45em;
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    padding: 0.6em;
+    border-radius: 0.8em;
+  }
+
+  .tile .app-chip {
+    align-self: flex-start;
+  }
+
+  .idea-title {
+    font-size: 0.72em;
+    font-weight: 800;
+  }
+
+  /* Without the script, show where each scene ends up. */
+  [data-approve],
+  [data-send] {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { initFeatureScreen } from '../../scripts/feature-screens';
+
+  const BUTTER_RING = '0 0 0 0.12em #f2d98a';
+  const NO_RING = '0 0 0 0em rgba(242,217,138,0)';
+
+  document.querySelectorAll<HTMLElement>('[data-feature-panel="deals"]').forEach((panel) => {
+    initFeatureScreen(panel, [
+      // Inbound: filter the inbox, approve the best fit, schedule it, negotiate.
+      (scene) => {
+        const q = gsap.utils.selector(scene);
+        return gsap
+          .timeline()
+          .from(q('[data-deal]'), { x: '-0.8em', opacity: 0, duration: 0.4, stagger: 0.1 })
+          .set(q('[data-filtered]'), { opacity: 0 }, 0)
+          .fromTo(q('[data-scan]'), { y: 0, opacity: 1 }, { y: '12.5em', duration: 1, ease: 'power1.inOut' }, 0.6)
+          .to(q('[data-scan]'), { opacity: 0, duration: 0.2 })
+          .to(q('[data-drop]'), { opacity: 0.4, duration: 0.3, stagger: 0.25 }, 0.95)
+          .to(q('[data-filtered]'), { opacity: 1, duration: 0.3, stagger: 0.25 }, 0.95)
+          .fromTo(q('[data-deal]')[0], { boxShadow: NO_RING }, { boxShadow: BUTTER_RING, duration: 0.3 }, 1.7)
+          .from(q('[data-detail]'), { x: '1em', opacity: 0, duration: 0.5, ease: 'power3.out' }, 1.9)
+          .from(q('[data-detail] [data-tag]'), { scale: 0.6, opacity: 0, duration: 0.35, stagger: 0.1, ease: 'back.out(2)' }, 2.2)
+          .set(q('[data-approved]'), { opacity: 0 }, 0)
+          .fromTo(q('[data-approve]'), { opacity: 1 }, { scale: 0.9, duration: 0.12, yoyo: true, repeat: 1, immediateRender: true }, 2.8)
+          .to(q('[data-approve]'), { opacity: 0, duration: 0.15 }, 3.05)
+          .to(q('[data-approved]'), { opacity: 1, duration: 0.2 }, 3.05)
+          .from(q('[data-step]'), { y: '0.5em', opacity: 0, duration: 0.35 }, 3.3)
+          .from(q('[data-bubble]'), { y: '0.5em', opacity: 0, duration: 0.35 }, 3.7)
+          .fromTo(q('[data-typing]'), { opacity: 0 }, { opacity: 1, duration: 0.2 }, 4.0)
+          .fromTo(q('[data-typing] i'), { y: 0 }, { y: '-0.25em', duration: 0.2, yoyo: true, repeat: 3, stagger: 0.1 }, 4.0)
+          .to(q('[data-typing]'), { opacity: 0, duration: 0.15 }, 4.8)
+          .from(q('[data-bubble-reply]'), { y: '0.5em', opacity: 0, duration: 0.35 }, 4.85)
+          .addLabel('rest');
+      },
+      // Outbound: scan brands, keep the best matches, write and send a pitch.
+      (scene) => {
+        const q = gsap.utils.selector(scene);
+        const tiles = q('[data-tile]');
+        const tl = gsap
+          .timeline()
+          .from(tiles, { y: '0.6em', opacity: 0, duration: 0.4, stagger: 0.06 })
+          .from(q('[data-fit]'), { opacity: 0, duration: 0.2, stagger: 0.2 }, 0.7);
+        tiles.forEach((tile, index) => {
+          tl.fromTo(tile, { boxShadow: NO_RING }, { boxShadow: BUTTER_RING, duration: 0.1, yoyo: true, repeat: 1, repeatDelay: 0.05 }, 0.65 + index * 0.2);
+        });
+        return tl
+          .to(q('[data-tile]:not([data-top])'), { opacity: 0.4, duration: 0.3 }, 2.0)
+          .to(q('[data-top]'), { boxShadow: BUTTER_RING, duration: 0.3 }, 2.0)
+          .from(q('[data-pitch]'), { x: '1em', opacity: 0, duration: 0.5, ease: 'power3.out' }, 2.3)
+          .from(q('[data-pitch] [data-tag]'), { scale: 0.6, opacity: 0, duration: 0.35, stagger: 0.1, ease: 'back.out(2)' }, 2.6)
+          .from(q('[data-idea-title]'), { opacity: 0, duration: 0.3 }, 2.9)
+          .from(q('[data-line]'), { scaleX: 0, transformOrigin: '0 50%', duration: 0.4, stagger: 0.1 }, 3.0)
+          .set(q('[data-sent]'), { opacity: 0 }, 0)
+          .fromTo(q('[data-send]'), { opacity: 1 }, { scale: 0.9, duration: 0.12, yoyo: true, repeat: 1, immediateRender: true }, 3.6)
+          .to(q('[data-send]'), { opacity: 0, duration: 0.15 }, 3.85)
+          .from(q('[data-sent]'), { scale: 0.6, duration: 0.35, ease: 'back.out(2.5)' }, 3.85)
+          .to(q('[data-sent]'), { opacity: 1, duration: 0.15 }, 3.85)
+          .addLabel('rest');
+      },
+    ]);
+  });
+</script>

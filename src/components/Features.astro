@@ -1,29 +1,42 @@
 ---
 import FeatureCard from './FeatureCard.astro';
+import TrendsScreen from './screens/TrendsScreen.astro';
+import PlanScreen from './screens/PlanScreen.astro';
+import DealsScreen from './screens/DealsScreen.astro';
 
 const features = [
   {
     label: 'Create',
     title: 'Trends, turned into ideas.',
-    description: 'We automatically find the trends that work and turn them into content ideas.',
+    description:
+      'Pick the sources and topics you care about. Our agents catch the trends that matter and turn them into content ideas for you to review.',
     accent: 'lime' as const,
-    hint: 'Trend found',
+    screen: 'trends' as const,
+    screenLabel:
+      'Illustration: agents read the sources and topics you picked, spot a trend, and suggest content ideas for you to review.',
+    Screen: TrendsScreen,
   },
   {
     label: 'Plan',
     title: 'Posted at the right time.',
     description:
-      'Schedule and publish automatically at the best time, and plan around your brand-deal videos.',
+      "We suggest the best time to post based on your topics and content, and plan around the time you've committed to brand deals.",
     accent: 'pink' as const,
-    hint: 'Best time to post',
+    screen: 'plan' as const,
+    screenLabel:
+      'Illustration: a phone app suggests the best time to post for a topic, and plans posts around brand-deal dates.',
+    Screen: PlanScreen,
   },
   {
     label: 'Grow',
     title: 'Brand deals, handled.',
     description:
-      'AI agents manage inbound and outbound brand deals, from logistics to negotiation.',
+      'AI agents filter inbound deals for the best fit, then schedule and negotiate the ones you approve. For outbound, they find brands that match your values and growth goals, and come up with ideas to pitch.',
     accent: 'butter' as const,
-    hint: 'Negotiation',
+    screen: 'deals' as const,
+    screenLabel:
+      'Illustration: agents score inbound brand deals, then schedule and negotiate the one you approve, and pitch ideas to brands that match your values.',
+    Screen: DealsScreen,
   },
 ];
 ---
@@ -39,15 +52,10 @@ const features = [
 
   <div class="mt-14 flex flex-col gap-6 md:mt-20 md:gap-8">
     {
-      features.map((feature, index) => (
-        <FeatureCard
-          label={feature.label}
-          title={feature.title}
-          description={feature.description}
-          accent={feature.accent}
-          hint={feature.hint}
-          reverse={index % 2 === 1}
-        />
+      features.map(({ Screen, ...feature }, index) => (
+        <FeatureCard {...feature} reverse={index % 2 === 1}>
+          <Screen />
+        </FeatureCard>
       ))
     }
   </div>
